@@ -139,7 +139,8 @@ public class CameraTestActivity extends Activity
                     
                     SymbolSet syms = scanner.getResults();
                     for (Symbol sym : syms) {
-                        scanText.setText("barcode result " + sym.getData());
+                    	// TO-DO get this data to show on the other page
+                        scanText.setText("barcode result: " + sym.getData());
                         barcodeScanned = true;
                     }
                 }
