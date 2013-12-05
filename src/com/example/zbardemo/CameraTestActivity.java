@@ -9,23 +9,22 @@ package com.example.zbardemo;
 import com.example.zbardemo.CameraPreview;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
-
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.Button;
-
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
-
 import android.widget.TextView;
 import android.graphics.ImageFormat;
 
@@ -139,9 +138,18 @@ public class CameraTestActivity extends Activity
                     
                     SymbolSet syms = scanner.getResults();
                     for (Symbol sym : syms) {
-                    	// TO-DO get this data to show on the other page
-                        scanText.setText("barcode result: " + sym.getData());
-                        barcodeScanned = true;
+                    	String symData = sym.getData();
+                    	scanText.setText("barcode result: " + sym.getData());
+                    	barcodeScanned = true;
+                    	if(!TextUtils.isEmpty(symData))
+                    	{
+	                        Intent intent = new Intent();
+	                        intent.putExtra("SCAN_RESULT", sym.getData());
+	                        intent.putExtra("count", sym.getCount());
+	                        setResult(Activity.RESULT_OK, intent);
+	                        finish();
+	                        break;
+                    	}
                     }
                 }
             }
