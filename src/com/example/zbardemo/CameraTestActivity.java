@@ -41,12 +41,8 @@ public class CameraTestActivity extends Activity
     private CameraPreview mPreview;
     private Handler autoFocusHandler;
 
-    TextView scanText;
-    Button scanButton;
-
     ImageScanner scanner;
 
-    private boolean barcodeScanned = false;
     private boolean previewing = true;
 
     static {
@@ -71,23 +67,6 @@ public class CameraTestActivity extends Activity
         mPreview = new CameraPreview(this, mCamera, previewCb, autoFocusCB);
         FrameLayout preview = (FrameLayout)findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
-
-        scanText = (TextView)findViewById(R.id.scanText);
-
-        scanButton = (Button)findViewById(R.id.ScanButton);
-
-        scanButton.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    if (barcodeScanned) {
-                        barcodeScanned = false;
-                        scanText.setText("Scanning...");
-                        mCamera.setPreviewCallback(previewCb);
-                        mCamera.startPreview();
-                        previewing = true;
-                        mCamera.autoFocus(autoFocusCB);
-                    }
-                }
-            });
     }
 
     public void onPause() {
@@ -128,7 +107,8 @@ public class CameraTestActivity extends Activity
 
                 Image barcode = new Image(size.width, size.height, "Y800");
                 barcode.setData(data);
-
+                
+                // Scan code from camera
                 int result = scanner.scanImage(barcode);
                 
                 if (result != 0) {
@@ -139,16 +119,24 @@ public class CameraTestActivity extends Activity
                     SymbolSet syms = scanner.getResults();
                     for (Symbol sym : syms) {
                     	String symData = sym.getData();
-                    	scanText.setText("barcode result: " + sym.getData());
-                    	barcodeScanned = true;
+                    	
+                    	// symData is not empty
                     	if(!TextUtils.isEmpty(symData))
                     	{
 	                        Intent intent = new Intent();
 	                        intent.putExtra("SCAN_RESULT", sym.getData());
-	                        intent.putExtra("count", sym.getCount());
 	                        setResult(Activity.RESULT_OK, intent);
 	                        finish();
 	                        break;
+                    	}
+                    	// symData is empty
+                    	else
+                    	{
+                    		Intent intent = new Intent();
+                    		intent.putExtra("SCAN_RESULT", sym.getData());
+                    		setResult(Activity.RESULT_CANCELED, intent);
+                    		finish();
+                    		break;
                     	}
                     }
                 }

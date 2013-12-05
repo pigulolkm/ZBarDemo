@@ -42,14 +42,11 @@ public class ZBarDemoActivity extends Activity {
 			case scan_REQUEST:
 				if(resultCode == RESULT_OK)
 				{
-					Toast.makeText(this, "Scan Result = " + data.getStringExtra("SCAN_RESULT") +"\n Count: "+ data.getStringExtra("count"), Toast.LENGTH_LONG).show();
+					Toast.makeText(this, "Scan Result = " + data.getStringExtra("SCAN_RESULT"), Toast.LENGTH_LONG).show();
                 } 
-				else if(resultCode == RESULT_CANCELED && data != null) 
+				else if(resultCode == RESULT_CANCELED) 
 				{
-                    /*String error = data.getStringExtra("ERROR_INFO");
-                    if(!TextUtils.isEmpty(error)) {
-                        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-                    }*/
+					Toast.makeText(this, "Invalid code", Toast.LENGTH_LONG).show();
                 }
                 break;
 		}
